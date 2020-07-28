@@ -12,7 +12,7 @@ import {
 
 export function removeNuGetPackage() {
     checkProjFilePath(vscode.workspace.rootPath)
-        .then((result: Array<string>): string | Thenable<string> => {
+        .then((result: Array<string>): string | Thenable<string | Thenable<never>> => {
             if (result.length === 1) {
                 return result[0];
             }

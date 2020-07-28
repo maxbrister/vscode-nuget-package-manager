@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 
 import { NUGET_SEARCH_URL, CANCEL } from '../../constants';
 import { getFetchOptions } from '../../utils';
+import { getFetchConfig } from '../../utils/getFetchOptions';
 
 export default function fetchPackages(input: string, searchUrl: string = NUGET_SEARCH_URL): Promise<Response> | Promise<never> {
     if (!input) {
@@ -19,5 +20,5 @@ export default function fetchPackages(input: string, searchUrl: string = NUGET_S
         take: '100'
     });
 
-    return fetch(`${searchUrl}?${queryParams}`, getFetchOptions(vscode.workspace.getConfiguration('http')));
+    return fetch(`${searchUrl}?${queryParams}`, getFetchOptions(getFetchConfig()));
 }

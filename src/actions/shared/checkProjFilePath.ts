@@ -3,9 +3,9 @@ import * as vscode from 'vscode';
 import { handleError } from '../../utils';
 import { getProjFileRecursive } from './';
 
-export default function checkProjFilePath(startPath: string): Promise<Array<string> | never> {
+export default function checkProjFilePath(startPath: string): Promise<Array<string> | Promise<never>> {
     return getProjFileRecursive(startPath)
-        .then<Array<string> | Promise<never>>((foundProjFile: Array<string>) => {
+        .then<Array<string> | Promise<never>>((foundProjFile?: Array<string>) => {
             if (foundProjFile.length < 1) {
                 return handleError<Promise<never>>(
                     null,

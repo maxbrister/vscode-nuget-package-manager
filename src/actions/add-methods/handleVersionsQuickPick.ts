@@ -4,25 +4,29 @@ import { parseString } from 'xml2js';
 
 import { handleError } from '../../utils';
 import { checkProjFilePath, showProjFileQuickPick, createUpdatedProjectJson } from '../shared';
-import { ADD } from '../../constants';
+import { ADD, CANCEL } from '../../constants';
 
 function getErrorMessage(verb: string, projFileFullPath: string): string {
     return `Could not ${verb} the file at ${projFileFullPath}. Please try again.`;
 }
 
 // TODO: Clean this up if possible.
-export default function handleVersionsQuickPick({ selectedVersion, selectedPackageName }: { selectedVersion: string, selectedPackageName: string }): Promise<any> | Promise<never> {
+export default function handleVersionsQuickPick({ selectedVersion, selectedPackageName }: { selectedVersion: string, selectedPackageName: string }): Promise<any | Promise<never>> {
     selectedVersion = selectedVersion.startsWith('Latest version') ? '*' : selectedVersion;
 
     return checkProjFilePath(vscode.workspace.rootPath)
-        .then((result): string | Thenable<string> => {
+        .then((result: string[]) => {
+            if (!result) {
+                // User canceled.
+                return Promise.reject(CANCEL);
+            }
             if (result.length === 1) {
                 return result[0];
             }
 
             return showProjFileQuickPick(result, ADD);
         })
-        .then((pickedProjFile) => {
+        .then((pickedProjFile: string) => {
             return new Promise((resolve, reject) => {
                 fs.readFile(pickedProjFile, 'utf8', (err, data) => {
                     if (err) {

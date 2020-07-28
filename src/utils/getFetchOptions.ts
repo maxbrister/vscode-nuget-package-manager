@@ -1,5 +1,6 @@
 import * as url from 'url';
 import * as HttpsProxyAgent from 'https-proxy-agent';
+import * as vscode from 'vscode';
 
 import { RESPONSE_TIMEOUT } from '../constants';
 
@@ -13,6 +14,15 @@ interface ProxyConfiguration {
     proxy?: string;
     proxyAuthorization?: string | null;
     proxyStrictSSL?: boolean;
+}
+
+export function getFetchConfig(): ProxyConfiguration {
+    var config = vscode.workspace.getConfiguration('http');
+    return {
+        proxy: config.get("proxy"),
+        proxyAuthorization: config.get("proxyAuthorization"),
+        proxyStrictSSL: config.get("proxyStrictSSL")
+    };
 }
 
 export default function getFetchOptions(configuration?: ProxyConfiguration) {
@@ -32,9 +42,9 @@ export default function getFetchOptions(configuration?: ProxyConfiguration) {
         const useStrictSSL = !!proxyStrictSSL; // coerce to boolean just in case
 
         fetchOptions.agent = new HttpsProxyAgent({
-            ...parsedProxy,
-            secureEndpoint: useStrictSSL,
-            rejectUnauthorized: useStrictSSL
+            host: parsedProxy.host,
+            port: parsedProxy.port,
+            secureProxy: useStrictSSL
         });
 
         lastHttpsProxyAgent = fetchOptions.agent;
