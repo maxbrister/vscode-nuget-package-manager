@@ -1,9 +1,12 @@
 import deletePackageReference from './deletePackageReference';
 import readInstalledPackages from './readInstalledPackages';
-import showPackagesQuickPick from './showPackagesQuickPick';
+import { QuickPick, ProjectInfo } from './showPackagesQuickPick';
+import showPackagesQuickPick from "./showPackagesQuickPick";
 
 export {
     deletePackageReference,
     readInstalledPackages,
-    showPackagesQuickPick
+    showPackagesQuickPick,
+    ProjectInfo,
+    QuickPick
 };
