@@ -11,7 +11,7 @@ function getErrorMessage(verb: string, projFileFullPath: string): string {
 }
 
 // TODO: Clean this up if possible.
-export default function handleVersionsQuickPick({ selectedVersion, selectedPackageName }: { selectedVersion: string, selectedPackageName: string }): Promise<any | Promise<never>> {
+export default function handleVersionsQuickPick({ selectedVersion, selectedPackageName }: { selectedVersion: string, selectedPackageName: string }): Promise<any[] | Promise<never>> {
     selectedVersion = selectedVersion.startsWith('Latest version') ? '*' : selectedVersion;
 
     return checkProjFilePath(vscode.workspace.rootPath)
@@ -21,13 +21,13 @@ export default function handleVersionsQuickPick({ selectedVersion, selectedPacka
                 return Promise.reject(CANCEL);
             }
             if (result.length === 1) {
-                return result[0];
+                return result;
             }
 
             return showProjFileQuickPick(result, ADD);
         })
-        .then((pickedProjFile: string) => {
-            return new Promise((resolve, reject) => {
+        .then((pickedProjFiles: string[]) => {
+            var tasks = pickedProjFiles.map(pickedProjFile => new Promise((resolve, reject) => {
                 fs.readFile(pickedProjFile, 'utf8', (err, data) => {
                     if (err) {
                         return handleError(err, getErrorMessage('read', pickedProjFile), reject);
@@ -56,6 +56,7 @@ export default function handleVersionsQuickPick({ selectedVersion, selectedPacka
                         });
                     });
                 });
-            });
+            }));
+            return Promise.all(tasks);
         });
 }

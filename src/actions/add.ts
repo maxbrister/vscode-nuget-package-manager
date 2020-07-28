@@ -15,6 +15,17 @@ import {
     writeFile
 } from './add-methods';
 
+function writeFiles(info: any[]): Thenable<string> {
+    var tasks = info.map(info => writeFile(info));
+    return Promise.all(tasks).then((results: string[]) => {
+        if (results.length == 1) {
+            return results[0];
+        }
+
+        return `Success! Wrote to ${results.length} projects. Run dotnet restore to update your project.`
+    });
+}
+
 export function addNuGetPackage() {
     showSearchBox()
         .then(fetchPackages)
@@ -24,7 +35,7 @@ export function addNuGetPackage() {
         .then(handleVersionsResponse)
         .then(showVersionsQuickPick)
         .then(handleVersionsQuickPick)
-        .then(writeFile)
+        .then(writeFiles)
         .then(showInformationMessage)
         .then(undefined, (err) => {
             clearStatusBar();

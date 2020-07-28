@@ -14,17 +14,17 @@ function getPlaceholder(action: string): string {
     return `${preposition} which project file do you wish to ${action.toLowerCase()} this dependency?`;
 }
 
-export default function showProjFileQuickPick(foundProjFiles: Array<string>, action: string): Thenable<string | Thenable<never>> {
+export default function showProjFileQuickPick(foundProjFiles: Array<string>, action: string): Thenable<string[] | Thenable<never>> {
     // Truncate `.[fc]sproj` file paths for readability, mapping the truncated string to the full path
     // for easy retrieval once a truncated path is picked by the user.
     const truncatedPathMap = foundProjFiles.reduce((newMap, projFilePath) => {
-        newMap[truncateProjFilePath(projFilePath)] = projFilePath;
+        newMap[truncateProjFilePath(projFilePath)] = [projFilePath];
         return newMap;
-    }, {});
+    }, {"All": foundProjFiles});
 
     return vscode.window.showQuickPick(Object.keys(truncatedPathMap), {
         placeHolder: getPlaceholder(action)
-    }).then<string | Promise<never>>((choice?: string) => {
+    }).then((choice?: string) => {
         if (!choice) {
             // User canceled.
             return Promise.reject(CANCEL);

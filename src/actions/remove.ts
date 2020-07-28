@@ -12,12 +12,15 @@ import {
 
 export function removeNuGetPackage() {
     checkProjFilePath(vscode.workspace.rootPath)
-        .then((result: Array<string>): string | Thenable<string | Thenable<never>> => {
+        .then((result: Array<string>): string[] | Thenable<string[] | Thenable<never>> => {
             if (result.length === 1) {
-                return result[0];
+                return result;
             }
 
             return showProjFileQuickPick(result, REMOVE);
+        })
+        .then((result) => {
+            return result[0];
         })
         .then(readInstalledPackages)
         .then(showPackagesQuickPick)
