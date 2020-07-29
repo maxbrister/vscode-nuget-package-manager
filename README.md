@@ -18,11 +18,11 @@ workspaces with single `.csproj`/`.fsproj` files.
 
 *Adding a Package:*
 
-![Adding a Package](https://github.com/maxbrister/vscode-nuget-package-manager/raw/master/images/add-package.gif)
+![Adding a Package](https://github.com/maxbrister/vscode-nuget-package-manager/raw/main/images/add-package.gif)
 
 *Removing a Package:*
 
-![Removing a Package](https://github.com/maxbrister/vscode-nuget-package-manager/raw/master/images/remove-package.gif)
+![Removing a Package](https://github.com/maxbrister/vscode-nuget-package-manager/raw/main/images/remove-package.gif)
 
 ## Known Issues
 
