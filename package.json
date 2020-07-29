@@ -2,7 +2,7 @@
     "name": "vscode-nuget-package-manager-improved",
     "displayName": "NuGet Package Manager Improved",
     "description": "Add or remove .NET Core 2.1+ package references to/from your project's .csproj or .fsproj file using Code's Command Palette.",
-    "version": "1.1.6",
+    "version": "2.0.0",
     "publisher": "maxbrister",
     "author": "Max Brister <max@2bass.com>",
     "license": "MIT",
