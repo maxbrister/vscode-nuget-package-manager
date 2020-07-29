@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import { handleError, getProjFileExtension } from '../../utils';
+import { findPackageReferences} from "../shared"
 import { CANCEL } from '../../constants';
 
 const getErrorMessage = (projFileFullPath: string): string => {
@@ -71,30 +72,20 @@ export default function deletePackageReference({
         // rest of the project file. None of the popular JS only libraries seem to support this.
         // Solution is to abuse regex.
         const [ selectedPackageName, selectedPackageVersion ] = selectedPackage.split(/\s/);
-        const packageAttribute = new RegExp(`\\sInclude=['"]${escapeRegExp(selectedPackageName)}['"]`);
-        const packageVersion = new RegExp(`\\sVersion=['"]${escapeRegExp(selectedPackageVersion)}['"]`);
-        var index = 0;
-        var end = 0;
-        while (true) {
-            let substr = originalContents.substr(index);
-            let subIndex = substr.search(/<PackageReference\s/);
-            if (subIndex == -1) {
-                return handleError("Failed to find package", getErrorMessage(projFileFullPath), reject);
-            }
-            
-            index = index + subIndex;
-            end = originalContents.indexOf(">", index);
-            if (end == -1) {
-                return handleError("Failed to find closing '>'", getErrorMessage(projFileFullPath), reject);
-            }
-            
-            var packageRef = originalContents.substr(index, end - index);
-            var packageIndex = packageRef.search(packageAttribute);
-            var versionIndex = packageRef.search(packageVersion);
-            if (packageIndex != -1 && versionIndex != -1) {
+        let references = findPackageReferences(originalContents);
+        let index = -1;
+        let result = references.next();
+        while (!!result.value) {
+            if (result.value.packageName == selectedPackageName && result.value.packageVersion == selectedPackageVersion) {
+                index = result.value.start;
                 break;
             }
-            index += 1;
+
+            result = references.next();
+        }
+
+        if (index == -1) {
+            return handleError("Could not locate package", getErrorMessage(projFileFullPath), reject);
         }
 
         var removeStart = findRemoveStart(originalContents, index);

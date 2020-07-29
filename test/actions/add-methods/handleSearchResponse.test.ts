@@ -4,7 +4,8 @@ import { handleSearchResponse } from '../../../src/actions/add-methods';
 export default function runHandleSearchResponseTests() {
     describe('handleSearchResponse', function () {
         it('should return a rejected promise if response.ok is falsey', function (done) {
-            handleSearchResponse(<Response>{ ok: false }).catch(() => {
+            let response: any = handleSearchResponse(<Response>{ ok: false });
+            response.catch(() => {
                 expect(true).toBeTruthy()
                 done();
             });

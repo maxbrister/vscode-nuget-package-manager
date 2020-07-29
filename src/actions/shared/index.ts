@@ -5,6 +5,7 @@ import clearStatusBar from './clearStatusBar';
 import createUpdatedProject from './createUpdatedProject';
 import getProjFileRecursive from './getProjFileRecursive';
 import truncateProjFilePath from './truncateProjFilePath';
+import { findPackageReferences } from "./xmlUtilities";
 
 const showInformationMessage = vscode.window.showInformationMessage.bind(vscode.window);
 
@@ -15,5 +16,6 @@ export {
     showInformationMessage,
     createUpdatedProject,
     getProjFileRecursive,
-    truncateProjFilePath
+    truncateProjFilePath,
+    findPackageReferences
 };
