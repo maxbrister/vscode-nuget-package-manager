@@ -14,24 +14,12 @@ const getErrorMessage = (pickedProjFile: string): string => {
 export default function writeFile({
     pickedProjFile,
     contents,
-    selectedPackageName,
+    selectedPackageName,    
     selectedVersion,
     originalContents = ''
 }): Promise<string | never> {
     return new Promise((resolve, reject) => {
-        const xmlBuilder = new XMLBuilder({
-            headless: isHeadlessXML(originalContents)
-        });
-        let xml;
-
-        try {
-            xml = xmlBuilder.buildObject(contents);
-        }
-        catch (ex) {
-            return handleError(ex, getErrorMessage(pickedProjFile), reject);
-        }
-
-        fs.writeFile(pickedProjFile, xml, (err) => {
+        fs.writeFile(pickedProjFile, contents, (err) => {
             if (err) {
                 return handleError(err, getErrorMessage(pickedProjFile), reject);
             }

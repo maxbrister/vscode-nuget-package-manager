@@ -41,7 +41,7 @@ export default function handleVersionsQuickPick({ selectedVersion, selectedPacka
                         let contents;
 
                         try {
-                            contents = createUpdatedProject(parsed, selectedPackageName, selectedVersion);
+                            contents = createUpdatedProject(data, selectedPackageName, selectedVersion);
                         }
                         catch (ex) {
                             return handleError(ex, getErrorMessage('parse', pickedProjFile), reject);

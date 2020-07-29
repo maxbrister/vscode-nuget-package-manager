@@ -1,58 +1,12 @@
 import * as fs from 'fs';
 import { handleError, getProjFileExtension } from '../../utils';
-import { findPackageReferences} from "../shared"
+import { findPackageReferences, findElementEnd, findRemoveStart, findRemoveEnd } from "../shared"
 import { CANCEL } from '../../constants';
 
 const getErrorMessage = (projFileFullPath: string): string => {
     const extension = getProjFileExtension(projFileFullPath);
     const fileDescription = extension ? `.${extension}` : 'project';
     return `Failed to write an updated ${fileDescription} file. Please try again later.`;
-}
-
-function escapeRegExp(s: string): string {
-    return s.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&');
-}
-
-function findRemoveStart(s: string, start: number): number {
-    var idx = start - 1;
-    while (idx > 0 && / \t/.test(s[idx])) {
-        --idx;
-    }
-
-    return idx + 1;
-}
-
-function findRemoveEnd(s: string, end: number): number {
-    var idx = end;
-    while (idx < s.length && / \t/.test(s[idx])) {
-        ++idx;
-    }
-    if (idx < s.length && s[idx] == '\r') {
-        ++idx;
-    }
-    if (idx < s.length && s[idx] == '\n') {
-        ++idx;
-    }
-
-    return idx;
-}
-
-function findElementEnd(s: string, start: number): number {
-    var end = start;
-    var count = 0;
-    do {
-        if (end >= s.length) {
-            return -1;
-        }
-        if (s[end] == '<') {
-            ++count;
-        } else if (s[end] == '>') {
-            --count;
-        }
-        ++end;
-    } while (count > 0);
-
-    return end;
 }
 
 export default function deletePackageReference({
