@@ -14,6 +14,7 @@
         ".net core",
         "manager",
         "add",
+        "update",
         "remove",
         "install",
         "C#",
@@ -27,6 +28,7 @@
     ],
     "activationEvents": [
         "onCommand:extension.addNuGetPackage",
+        "onCommand:extension.updateNuGetPackage",
         "onCommand:extension.removeNuGetPackage"
     ],
     "main": "./out/src/extension",
@@ -35,6 +37,10 @@
             {
                 "command": "extension.addNuGetPackage",
                 "title": "NuGet Package Manager: Add Package"
+            },
+            {
+                "command": "extension.updateNuGetPackage",
+                "title": "NuGet Package Manager: Update Package"
             },
             {
                 "command": "extension.removeNuGetPackage",

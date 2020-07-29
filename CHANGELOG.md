@@ -6,6 +6,7 @@ All notable changes to the "vscode-nuget-package-manager-improved" extension wil
 
 - Preserve XML formatting and comments when modifying project files
 - When multiple projects are present add an "All" option to modify all projects
+- Update existing NuGet packages
 - NuGet Package Manager forked
 
 ## [1.1.6] - 2017-11-18

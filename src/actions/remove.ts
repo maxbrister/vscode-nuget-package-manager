@@ -1,20 +1,13 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
-
 import { showInformationMessage, checkProjFilePath, showProjFileQuickPick } from './shared';
-import { emptyString, CANCEL, REMOVE } from '../constants';
+import { CANCEL, REMOVE } from '../constants';
 
 import {
-    readInstalledPackages,
+    readAllInstalledPackages,
     showPackagesQuickPick,
     deletePackageReference,
     QuickPick
 } from './remove-methods';
-
-function readAllInstalledPackages(paths: string[]): Thenable<any[]> {
-    var tasks = paths.map(readInstalledPackages);
-    return Promise.all(tasks);
-}
 
 function deleteAllReferences(info: QuickPick): Thenable<string> {
     var tasks = info.projects.map(project => {

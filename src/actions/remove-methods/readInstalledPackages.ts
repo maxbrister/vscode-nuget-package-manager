@@ -9,7 +9,12 @@ const getConstructedErrorMessage = (projFileFullPath: string, template: string):
     return template.replace(/{{extension}}/g, fileDescription).replace(/{{projFileFullPath}}/g, projFileFullPath);
 }
 
-export default function readInstalledPackages(projFileFullPath: string): Promise<any> {
+export function readAllInstalledPackages(paths: string[]): Thenable<any[]> {
+    var tasks = paths.map(readInstalledPackages);
+    return Promise.all(tasks);
+}
+
+export function readInstalledPackages(projFileFullPath: string): Promise<any> {
     return new Promise((resolve, reject) => {
         fs.readFile(projFileFullPath, 'utf8', (err, data) => {
             if (err) {
