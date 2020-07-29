@@ -9,7 +9,7 @@ longer maintained, NuGet Package Manager extension.
 
 - Search the NuGet package repository for packages using either (partial
 or full) package name or another search term.
-- Add PackageReference dependencies to your .NET Core 1.1+ `.csproj` or
+- Add PackageReference dependencies to your .NET Core 2.1+ `.csproj` or
 `.fsproj` files from Visual Studio Code's Command Palette.
 - Remove installed packages from your project's `.csproj` or `.fsproj` files via
 Visual Studio Code's Command Palette.
