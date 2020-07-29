@@ -7,9 +7,5 @@ export default function runTruncateProjFilePathTests() {
             const rootPath = '/some/very/long/path';
             expect(truncateProjFilePath('/some/very/long/path/here/whatever.csproj', rootPath)).toBe('{root}/here/whatever.csproj');
         });
-
-        it('should throw if no workspace root is passed', function () {
-            expect(() => truncateProjFilePath('/some/path', undefined)).toThrow();
-        });
     });
 }

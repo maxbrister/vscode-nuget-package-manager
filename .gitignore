@@ -4,4 +4,4 @@ node_modules
 .vscode-test/
 vsc-extension-quickstart.md
 .DS_Store
-
+test/mocks/obj
