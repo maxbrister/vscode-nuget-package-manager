@@ -1,7 +1,45 @@
 import { findPackageReferences, findElementEnd, findRemoveStart, findRemoveEnd } from "../shared"
-import { isPlainObject } from '../../utils';
+import { stat } from "fs";
+import { reverse } from "dns";
+import { join } from "path";
 
-export default function createUpdatedProject(original: any, selectedPackageName: string, selectedVersion: string): any {
+function isNewline(s: string) {
+    return s == '\n' || s == '\r';
+}
+
+function inferNewLine(s: string, lineStartHint: number) {
+    if (isNewline(s[lineStartHint - 1])) {
+        if (s[lineStartHint - 1] == "\r" || s[lineStartHint - 2] == "\r" || s[lineStartHint] == "\r") {
+            return "\r\n";
+        } else {
+            return "\n";
+        }
+    } else {
+        return s.indexOf("\r") === -1 ? "\n" : "\r\n";
+    }
+}
+
+interface Line {
+    index: number,
+    line: string
+}
+
+// Skips blank lines
+function* reverseLineIterator(s: string, start: number): Generator<Line> {
+    while (true) {
+        while (start > 0 && isNewline(s[start])) --start;
+        if (start == 0) return;
+        let end = start;
+        while (end > 0 && !isNewline(s[end])) --end;
+        yield {
+            index: end + 1,
+            line: s.substr(end + 1, start - end)
+        };
+        start = end;
+    }
+}
+
+export default function createUpdatedProject(original: string, selectedPackageName: string, selectedVersion: string): any {
     let references = findPackageReferences(original);
     let iter = references.next();
     let reference;
@@ -39,7 +77,61 @@ export default function createUpdatedProject(original: any, selectedPackageName:
         }
         newContent = prefix + indent + content + postfix;
     } else {
-        // TODO: Add inside an ItemGroup. Account for not ItemGroup
+        let re = /<\/Project\s*>/gm;
+        let lastIndex = -1;
+        while (true) {
+            let m = re.exec(original);
+            if (m === null) {
+                break;
+            }
+            lastIndex = m.index;
+        }
+        if (lastIndex == -1) {
+            throw new Error("Failed to find </Project>");
+        }
+        let insertIdx = findRemoveStart(original, lastIndex);
+
+        // Skip over imports if possible
+        if (isNewline(original[insertIdx - 1])) {
+            let iter = reverseLineIterator(original, insertIdx - 1);
+            let next = iter.next();
+            while (!next.done) {
+                let {index, line} = next.value;
+                let isImport = line.search(/^\s*<Import[^>]*\/>\s*$/);
+                if (isImport === 0) {
+                    insertIdx = index;
+                } else if (/\S+/.test(line)) {
+                    break;
+                }
+                next = iter.next();
+            }
+        }
+
+        // Find the proper indentation by looking at the previous line
+        let indent = "";
+        if (isNewline(original[insertIdx - 1])) {
+            let iter = reverseLineIterator(original, insertIdx - 1);
+            let prev = iter.next();
+            if (!prev.done) {
+                let line = prev.value.line;
+                let m = line.match(/^(\s+)</);
+                if (!!m) {
+                    indent = m[1];
+                }
+            }
+        }
+
+        let innerIndent = indent.repeat(2);
+        if (innerIndent.length === 0) {
+            innerIndent = "  ";
+        }
+
+        // Infer space here to? This should be a pretty uncommon scenario.
+        let newLine = inferNewLine(original, insertIdx);
+        let content = `${indent}<ItemGroup>${newLine}${innerIndent}<PackageReference Include="${selectedPackageName}" Version="${selectedVersion}" />${newLine}${indent}</ItemGroup>${newLine}`;
+        let prefix = original.substr(0, insertIdx);
+        let postfix = original.substr(insertIdx);
+        newContent = prefix + content + postfix;
     }
 
     return newContent;
