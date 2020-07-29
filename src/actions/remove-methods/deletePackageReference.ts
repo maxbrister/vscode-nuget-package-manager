@@ -47,7 +47,7 @@ export default function deletePackageReference({
         if (elementEnd == -1) {
             return handleError("PackageReference is not terminated", getErrorMessage(projFileFullPath), reject);
         }
-        var removeEnd = findRemoveEnd(originalContents, elementEnd);
+        var removeEnd = findRemoveEnd(originalContents, elementEnd).index;
         var newContents = originalContents.substr(0, removeStart) + originalContents.substr(removeEnd);
         fs.writeFile(projFileFullPath, newContents, (err) => {
             if (err) {

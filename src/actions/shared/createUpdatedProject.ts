@@ -4,7 +4,9 @@ import { isPlainObject } from '../../utils';
 export default function createUpdatedProject(original: any, selectedPackageName: string, selectedVersion: string): any {
     let references = findPackageReferences(original);
     let iter = references.next();
+    let reference;
     while (!iter.done) {
+        reference = iter.value;
         if (iter.value.packageName == selectedPackageName) {
             break;
         }
@@ -12,7 +14,6 @@ export default function createUpdatedProject(original: any, selectedPackageName:
         iter = references.next();
     }
 
-    let reference = iter.value;
     let newContent;
     if (!!reference && reference.packageName == selectedPackageName) {
         let sub = original.substr(reference.start);
@@ -24,11 +25,12 @@ export default function createUpdatedProject(original: any, selectedPackageName:
         if (elementEnd == -1) {
             throw new Error(`PackageReference at ${idx} is not terminated`);
         }
-        let insert = findRemoveEnd(original, elementEnd);
+        let { index, newline } = findRemoveEnd(original, elementEnd);
+        let insert = index;
         let prefix = original.substr(0, insert);
         let postfix = original.substr(insert);
-        let maybeSpace = original[elementEnd - 2] == " " ? " " : "";
-        let content = `<PackageReference Include="${selectedPackageName}" Version="${selectedVersion}"${maybeSpace}/>`;
+        let maybeSpace = original[elementEnd - 3] == " " ? " " : "";
+        let content = `<PackageReference Include="${selectedPackageName}" Version="${selectedVersion}"${maybeSpace}/>${newline}`;
         let indent = "";
         if (insert != elementEnd) {
             // Inserting on the next line, figure out the indentation

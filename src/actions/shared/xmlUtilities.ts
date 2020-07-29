@@ -55,18 +55,19 @@ export function findElementEnd(s: string, start: number): number {
 
 export function findRemoveStart(s: string, start: number): number {
     var idx = start - 1;
-    while (idx > 0 && / \t/.test(s[idx])) {
+    while (idx > 0 && / |\t/.test(s[idx])) {
         --idx;
     }
 
     return idx + 1;
 }
 
-export function findRemoveEnd(s: string, end: number): number {
+export function findRemoveEnd(s: string, end: number) {
     var idx = end;
-    while (idx < s.length && / \t/.test(s[idx])) {
+    while (idx < s.length && / |\t/.test(s[idx])) {
         ++idx;
     }
+    let newlineStart = idx;
     if (idx < s.length && s[idx] == '\r') {
         ++idx;
     }
@@ -74,5 +75,8 @@ export function findRemoveEnd(s: string, end: number): number {
         ++idx;
     }
 
-    return idx;
+    return {
+        index: idx,
+        newline: s.substr(newlineStart, idx - newlineStart)
+    };
 }
