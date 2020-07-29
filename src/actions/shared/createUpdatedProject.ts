@@ -1,16 +1,6 @@
 import { isPlainObject } from '../../utils';
 
-/**
- * Generates a new JSON representation of the project file using `parsedProjectFile` as a basis.
- * Any property that is altered is cloned first to prevent mutating the original parsing output,
- * since mutating inside a utility method seems pretty risky.
- * 
- * @param {Object} parsedProjectFile - JSON representation of the current project file on disk;
- *  must have a top-level `Project` property
- * @param {string} selectedPackageName - name of package being added
- * @param {string} selectedVersion - version string for package being added
- */
-export default function createUpdatedProjectJson(parsedProjectFile: any, selectedPackageName: string, selectedVersion: string): any {
+export default function createUpdatedProject(parsedProjectFile: any, selectedPackageName: string, selectedVersion: string): any {
     if (!parsedProjectFile || !isPlainObject(parsedProjectFile.Project)) {
         // We don't try to create this, as its absence suggests something is terribly wrong.
         throw new TypeError('Cannot locate the project root in your project file. Please fix this issue and try again.');

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import checkProjFilePath from './checkProjFilePath';
 import showProjFileQuickPick from './showProjFileQuickPick';
 import clearStatusBar from './clearStatusBar';
-import createUpdatedProjectJson from './createUpdatedProjectJson';
+import createUpdatedProject from './createUpdatedProject';
 import getProjFileRecursive from './getProjFileRecursive';
 import truncateProjFilePath from './truncateProjFilePath';
 
@@ -13,7 +13,7 @@ export {
     showProjFileQuickPick,
     clearStatusBar,
     showInformationMessage,
-    createUpdatedProjectJson,
+    createUpdatedProject,
     getProjFileRecursive,
     truncateProjFilePath
 };

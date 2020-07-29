@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { parseString } from 'xml2js';
 
 import { handleError } from '../../utils';
-import { checkProjFilePath, showProjFileQuickPick, createUpdatedProjectJson } from '../shared';
+import { checkProjFilePath, showProjFileQuickPick, createUpdatedProject } from '../shared';
 import { ADD, CANCEL } from '../../constants';
 
 function getErrorMessage(verb: string, projFileFullPath: string): string {
@@ -41,7 +41,7 @@ export default function handleVersionsQuickPick({ selectedVersion, selectedPacka
                         let contents;
 
                         try {
-                            contents = createUpdatedProjectJson(parsed, selectedPackageName, selectedVersion);
+                            contents = createUpdatedProject(parsed, selectedPackageName, selectedVersion);
                         }
                         catch (ex) {
                             return handleError(ex, getErrorMessage('parse', pickedProjFile), reject);

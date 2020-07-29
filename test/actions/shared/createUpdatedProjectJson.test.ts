@@ -1,7 +1,7 @@
 import * as expect from 'expect';
 import * as fs from 'fs';
 import * as path from 'path';
-import { createUpdatedProjectJson } from '../../../src/actions/shared';
+import { createUpdatedProject } from '../../../src/actions/shared';
 
 const mockProjectName = 'MockProject';
 const mockProjectVersion = '1.0.0';
@@ -25,21 +25,21 @@ export default function runCreateUpdatedProjectJsonTests() {
     describe('createUpdatedProjectJson', function () {
         it('should handle standard .csproj/.fsproj JSON', function () {
             const json = JSON.parse(fs.readFileSync(`${mockPath}/Standard.json`, 'utf8'));
-            const result = createUpdatedProjectJson(json, mockProjectName, mockProjectVersion);
+            const result = createUpdatedProject(json, mockProjectName, mockProjectVersion);
             const itemGroups = result.Project.ItemGroup;
             checkPackageReference(itemGroups[itemGroups.length - 1].PackageReference, 2);
         });
 
         it('should handle .csproj/.fsproj files with no PackageReference tags', function () {
             const json = JSON.parse(fs.readFileSync(`${mockPath}/NoPackageReferences.json`, 'utf8'));
-            const result = createUpdatedProjectJson(json, mockProjectName, mockProjectVersion);
+            const result = createUpdatedProject(json, mockProjectName, mockProjectVersion);
             const itemGroups = result.Project.ItemGroup;
             checkPackageReference(itemGroups[itemGroups.length - 1].PackageReference);
         });
 
         it('should handle .csproj/.fsproj files with no ItemGroup tags', function () {
             const json = JSON.parse(fs.readFileSync(`${mockPath}/NoItemGroups.json`, 'utf8'));
-            const result = createUpdatedProjectJson(json, mockProjectName, mockProjectVersion);
+            const result = createUpdatedProject(json, mockProjectName, mockProjectVersion);
             const itemGroups = result.Project.ItemGroup;
 
             expect(itemGroups).toExist('Created JSON has an ItemGroup');
@@ -49,17 +49,17 @@ export default function runCreateUpdatedProjectJsonTests() {
 
         it('should throw for .csproj/.fsproj files lacking a Project tag', function () {
             const json = JSON.parse(fs.readFileSync(`${mockPath}/NoProject.json`, 'utf8'));
-            expect(() => createUpdatedProjectJson(json, mockProjectName, mockProjectVersion)).toThrow();
+            expect(() => createUpdatedProject(json, mockProjectName, mockProjectVersion)).toThrow();
         });
 
         it('should throw for empty files/`null` JSON values', function () {
             const json = JSON.parse(fs.readFileSync(`${mockPath}/Empty.json`, 'utf8'));
-            expect(() => createUpdatedProjectJson(json, mockProjectName, mockProjectVersion)).toThrow();
+            expect(() => createUpdatedProject(json, mockProjectName, mockProjectVersion)).toThrow();
         });
 
         it('should not modify passed-in JSON', function () {
             const json = JSON.parse(fs.readFileSync(`${mockPath}/NoItemGroups.json`, 'utf8'));
-            const result = createUpdatedProjectJson(json, mockProjectName, mockProjectVersion);
+            const result = createUpdatedProject(json, mockProjectName, mockProjectVersion);
             const itemGroups = result.Project.ItemGroup;
 
             expect(itemGroups).toExist('Created JSON has an ItemGroup');
