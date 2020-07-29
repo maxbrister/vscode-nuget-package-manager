@@ -18,7 +18,7 @@ export default function showVersionsQuickPick({ json, selectedPackageName }: { j
     json.versions
         .slice()
         .reverse()
-        .concat('Latest version (Wildcard *)')
+        .concat('*')
         .forEach(version => {
             let simplified = simplify(version);
             versions.add(simplified);    
