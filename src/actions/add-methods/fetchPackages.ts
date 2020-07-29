@@ -2,14 +2,14 @@ import * as vscode from 'vscode';
 import * as qs from 'querystring';
 import fetch from 'node-fetch';
 
-import { NUGET_SEARCH_URL, CANCEL } from '../../constants';
+import { CANCEL } from '../../constants';
 import { getFetchOptions } from '../../utils';
 import { getFetchConfig } from '../../utils/getFetchOptions';
 
-export default function fetchPackages(input: string, searchUrl: string = NUGET_SEARCH_URL): Promise<Response> | Promise<never> {
+export default async function fetchPackages(input: string, searchUrl: string): Promise<Response> {
     if (!input) {
         // Search canceled.
-        return Promise.reject(CANCEL);
+        throw CANCEL;
     }
 
     vscode.window.setStatusBarMessage('Searching NuGet...');
@@ -17,8 +17,9 @@ export default function fetchPackages(input: string, searchUrl: string = NUGET_S
     const queryParams = qs.stringify({
         q: input,
         prerelease: 'true',
-        take: '100'
+        take: '100',
+        semVerLevel: '2.0.0'
     });
 
-    return fetch(`${searchUrl}?${queryParams}`, getFetchOptions(getFetchConfig()));
+    return await fetch(`${searchUrl}?${queryParams}`, getFetchOptions(getFetchConfig()));
 }

@@ -1,14 +1,31 @@
 import * as vscode from 'vscode';
 
 import { CANCEL } from '../../constants';
-import { handleError } from '../../utils';
+
+// trim build information from symver 2.0 symbols. This could, in theory, cause
+// collisions.
+function simplify(v: string): string {
+    let idx = v.indexOf('+');
+    if (idx === -1) {
+        return v;
+    } else {
+        return v.substr(0, idx);
+    }
+}
 
 export default function showVersionsQuickPick({ json, selectedPackageName }: { json: any, selectedPackageName: string }): Promise<any | never> {
-    // TODO: This could probably use more error handling.
-    const versions = json.versions.slice().reverse().concat('Latest version (Wildcard *)');
+    let versions: Set<string> = new Set();
+    json.versions
+        .slice()
+        .reverse()
+        .concat('Latest version (Wildcard *)')
+        .forEach(version => {
+            let simplified = simplify(version);
+            versions.add(simplified);    
+        });
 
     return new Promise((resolve, reject) => {
-        vscode.window.showQuickPick(versions, {
+        vscode.window.showQuickPick(Array.from(versions), {
             placeHolder: 'Select the version to add.'
         }).then((selectedVersion: string | undefined) => {
             if (!selectedVersion) {

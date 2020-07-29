@@ -1,19 +1,32 @@
 import * as vscode from 'vscode';
-
-import { handleError } from '../../utils';
+import { CANCEL } from '../../constants';
 
 const errorMessage = 'No matching results found. Please try again.';
 
-export default function showPackageQuickPick(json: any): Thenable<string | undefined> | Promise<never> {
+interface SearchResult {
+    id: string,
+    versions: any[],
+    totalDownloads: string
+}
+
+export default async function showPackageQuickPick(json: any): Promise<any> {
     if (!json) {
-        return handleError<Promise<never>>(null, errorMessage, Promise.reject.bind(Promise));
+        throw new Error(errorMessage);
     }
 
-    const { data } = json;
-
+    const data: SearchResult[] = json.data;
     if (!data || data.length < 1) {
-        return handleError<Promise<never>>(null, errorMessage, Promise.reject.bind(Promise));
+        throw new Error(errorMessage);
     }
 
-    return vscode.window.showQuickPick(data);
+    let options = data.map(entry => entry.id);
+    let selectedId: string = await vscode.window.showQuickPick(options);
+    if (!selectedId) {
+        throw CANCEL;
+    }
+
+    let selection = data.find(entry => entry.id == selectedId);
+    return { json: {
+        versions: selection.versions.map(info => info.version)
+    }, selectedPackageName: selectedId };
 }

@@ -4,10 +4,11 @@ import { CANCEL, UPDATE } from '../constants';
 import { readAllInstalledPackages, showPackagesQuickPick, QuickPick } from "./remove-methods";
 import { showInformationMessage, createUpdatedProject } from "./shared";
 import { writeFile, showVersionsQuickPick, fetchPackageVersions, handleVersionsResponse } from "./add-methods";
+import { getNuGetService, VERSION_SERVICE } from "./shared";
 
-function selectPackageVersion(projects: QuickPick) {
+function selectPackageVersion(projects: QuickPick, versionUrl: string) {
     const [ selectedPackage, selectedPackageVersion ] = projects.selectedPackage.split(/\s/);
-    let fetch: any = fetchPackageVersions(selectedPackage);
+    let fetch: any = fetchPackageVersions(selectedPackage, versionUrl);
     return fetch.then(handleVersionsResponse)
         .then(showVersionsQuickPick)
         .then((result) => {
@@ -42,7 +43,7 @@ function selectMessage(messages: string[]): string {
 }
 
 export function updateNuGetPackage() {
-    checkProjFilePath(vscode.workspace.rootPath)
+    let projects = checkProjFilePath(vscode.workspace.rootPath)
         .then((result: string[]): string[] | Thenable<string[] | Thenable<never>> => {
             if (result.length === 1) {
                 return result
@@ -51,8 +52,10 @@ export function updateNuGetPackage() {
             return showProjFileQuickPick(result, UPDATE)
         })
         .then(readAllInstalledPackages)
-        .then(showPackagesQuickPick)
-        .then(selectPackageVersion)
+        .then(showPackagesQuickPick);
+    let versionUrl = getNuGetService(VERSION_SERVICE);
+    Promise.all([projects, versionUrl])
+        .then(([projects, versionUrl]) => selectPackageVersion(projects, versionUrl))
         .then(updatePackages)
         .then(selectMessage)
         .then(showInformationMessage)

@@ -2,11 +2,11 @@ import * as vscode from 'vscode';
 import fetch from 'node-fetch';
 
 import { clearStatusBar } from '../shared';
-import { NUGET_VERSIONS_URL, CANCEL } from '../../constants';
+import { CANCEL } from '../../constants';
 import { getFetchOptions } from "../../utils"
 import { getFetchConfig } from '../../utils/getFetchOptions';
 
-export default function fetchPackageVersions(selectedPackageName: string, versionsUrl: string = NUGET_VERSIONS_URL): Promise<any> | Promise<never> {
+export default function fetchPackageVersions(selectedPackageName: string, versionsUrl: string): Promise<any> | Promise<never> {
     if (!selectedPackageName) {
         // User has canceled the process.
         return Promise.reject(CANCEL);
