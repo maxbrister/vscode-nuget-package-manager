@@ -1,6 +1,6 @@
 # vscode-nuget-package-manager-improved
 
-An extension for Visual Studio Code that lets you easily add or remove
+An extension for Visual Studio Code that lets you easily add, update, or remove
 .NET Core 2.1+ package references to/from your project's `.csproj` or `.fsproj`
 files using Code's Command Palette. Forked from Jason Rogers' excellent, but no
 longer maintained, NuGet Package Manager extension.
