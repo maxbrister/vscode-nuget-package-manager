@@ -2,7 +2,7 @@
 
 All notable changes to the "vscode-nuget-package-manager-improved" extension will be documented in this file.
 
-## [2.0.1] - 2020-7-30
+## [2.1.0] - 2020-7-30
 
 - Add support for restoring projects using MSBuild
 

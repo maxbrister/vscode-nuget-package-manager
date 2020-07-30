@@ -31,7 +31,7 @@ workspaces with single `.csproj`/`.fsproj` files.
 
 ## Release Notes
 
-### 2.0.1
+### 2.1.0
 
 - Add support for restoring projects using MSBuild
 
