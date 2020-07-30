@@ -17,6 +17,7 @@
         "update",
         "remove",
         "install",
+        "restore",
         "C#",
         "F#"
     ],
@@ -29,7 +30,9 @@
     "activationEvents": [
         "onCommand:extension.addNuGetPackage",
         "onCommand:extension.updateNuGetPackage",
-        "onCommand:extension.removeNuGetPackage"
+        "onCommand:extension.removeNuGetPackage",
+        "onCommand:extension.msbuildRestoreNuGetPackage",
+        "onCommand:extension.msbuildRestoreAllNuGetPackage"
     ],
     "main": "./dist/extension",
     "contributes": {
@@ -45,6 +48,14 @@
             {
                 "command": "extension.removeNuGetPackage",
                 "title": "NuGet Package Manager: Remove Package"
+            },
+            {
+                "command": "extension.msbuildRestoreNuGetPackage",
+                "title": "NuGet Package Manager: Restore (MsBuild)"
+            },
+            {
+                "command": "extension.msbuildRestoreAllNuGetPackage",
+                "title": "NuGet Package Manager: Restore All (MsBuild)"
             }
         ]
     },

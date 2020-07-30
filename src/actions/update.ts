@@ -44,7 +44,7 @@ function selectMessage(messages: string[]): string {
 
 export function updateNuGetPackage() {
     let projects = checkProjFilePath(vscode.workspace.rootPath)
-        .then((result: string[]): string[] | Thenable<string[] | Thenable<never>> => {
+        .then((result: string[]): string[] | Thenable<string[]> => {
             if (result.length === 1) {
                 return result
             }

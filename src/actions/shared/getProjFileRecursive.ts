@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { flattenNestedArray, handleError } from '../../utils';
-import { projFileExtensionMatcher } from '../../constants';
+import { projFileExtensionMatcher, slnFileExtensionMatcher } from '../../constants';
 
 const nodeModulesMatcher = path.sep === '/' ? /\/node_modules\// : /\\node_modules\\/;
 
-export default function getProjFileRecursive(startPath: string): Promise<Array<string> | never> {
+export default function getProjFileRecursive(startPath: string, includeSln: boolean = false): Promise<string[]> {
     return new Promise((resolve, reject) => {
         fs.readdir(startPath, (err, files) => {
             if (err) {
@@ -26,7 +26,9 @@ export default function getProjFileRecursive(startPath: string): Promise<Array<s
                     }
                     
                     if (stats) {
-                        if (stats.isFile() && projFileExtensionMatcher.test(filePath)) {
+                        if (stats.isFile() &&
+                            (projFileExtensionMatcher.test(filePath) ||
+                            (includeSln && slnFileExtensionMatcher.test(filePath)))) {
                             return resolve([filePath]);
                         }
 

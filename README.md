@@ -15,6 +15,7 @@ or full) package name or another search term.
 Visual Studio Code's Command Palette.
 - Handles workspaces with multiple `.csproj` or `.fsproj` files as well as
 workspaces with single `.csproj`/`.fsproj` files.
+- Restore projects using MSBuild. Use the dotnet extension to restore using dotnet.
 
 *Adding a Package:*
 
@@ -30,7 +31,11 @@ workspaces with single `.csproj`/`.fsproj` files.
 
 ## Release Notes
 
-### 2.0
+### 2.0.1
+
+- Add support for restoring projects using MSBuild
+
+### 2.0.0
 
 - Preserve XML formatting and comments when modifying project files
 - When multiple projects are present add an "All" option to modify all projects
